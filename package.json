@@ -2,14 +2,40 @@
   "name": "synonym-expander",
   "version": "0.0.0",
   "description": "tool for expanding strings into every possible state given a set of word / phrase synonyms",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
+  "keywords": [],
+  "homepage": "https://github.com/revilossor/string-contractor#readme",
+  "bugs": {
+    "url": "https://github.com/revilossor/string-contractor/issues"
   },
   "repository": {
     "type": "git",
-    "url": ".."
+    "url": "https://github.com/revilossor/string-contractor.git"
   },
+  "license": "ISC",
   "author": "oliver.ross@hotmail.com",
-  "license": "ISC"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "ncc build src/index.ts -m -o dist",
+    "clean": "rm -rf dist",
+    "lint": "ts-standard .",
+    "prepare": "npm run build",
+    "test": "jest"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "ts-standard --fix",
+    "*package.json": "sort-package-json"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@vercel/ncc": "^0.28.6",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.0.0",
+    "sort-package-json": "^1.50.0",
+    "ts-jest": "^27.0.3",
+    "ts-standard": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
 }
