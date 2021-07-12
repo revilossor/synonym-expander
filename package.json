@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "description": "tool for expanding strings into every possible state given a set of word / phrase synonyms",
   "keywords": [],
-  "homepage": "https://github.com/revilossor/string-contractor#readme",
+  "homepage": "https://github.com/revilossor/synonym-expander#readme",
   "bugs": {
-    "url": "https://github.com/revilossor/string-contractor/issues"
+    "url": "https://github.com/revilossor/synonym-expander/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/revilossor/string-contractor.git"
+    "url": "https://github.com/revilossor/synonym-expander.git"
   },
   "license": "ISC",
   "author": "oliver.ross@hotmail.com",
