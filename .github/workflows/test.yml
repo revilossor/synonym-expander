@@ -5,7 +5,7 @@ on:
     branches:
       - '**'
       - '!main'
-# TODO gates for other lint-staged checks
+
 jobs:
   test:
     runs-on: ubuntu-latest
