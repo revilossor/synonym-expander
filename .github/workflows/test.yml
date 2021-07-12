@@ -3,6 +3,7 @@ name: Test
 on:
   push:
     branches:
+      - '**'
       - '!main'
 # TODO gates for other lint-staged checks
 jobs:
