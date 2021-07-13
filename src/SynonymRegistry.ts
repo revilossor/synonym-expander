@@ -21,14 +21,16 @@ export class SynonymRegistry {
 
   public getSynonymous (of: string): string[] {
     const index = this.inverted.get(of)
+
     if (typeof (index) === 'undefined') {
       return []
     }
+
     const synonyms = this.store.get(this.getStoreKey(index))
 
-    return (synonyms != null)
-      ? Array.from(synonyms)
-      : []
+    return typeof (synonyms) === 'undefined'
+      ? []
+      : Array.from(synonyms)
   }
 
   private insert (synonyms: string[]): void {
