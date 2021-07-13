@@ -13,7 +13,7 @@ const synonyms = [
   ["it's", "it is"]
 ]
 
-const expander = new SynonymExpander(synonyms)
+const expander = new SynonymExpander(...synonyms)
 ```
 
 When you pass a string to the expanders **expand** function you will receive a list of all permutations of the string in which synonyms are replaced with each of their alternatives
