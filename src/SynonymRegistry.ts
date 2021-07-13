@@ -11,7 +11,7 @@ export class SynonymRegistry {
 
   public register (...lists: string[][]): SynonymRegistry {
     lists.forEach(list => this.insert(list))
-    this.generateStore()
+    this.generate()
     return this
   }
 
@@ -24,7 +24,7 @@ export class SynonymRegistry {
     if (typeof (index) === 'undefined') {
       return []
     }
-    const synonyms = this.store.get(JSON.stringify(Array.from(index))) // TODO dry, hash func...
+    const synonyms = this.store.get(this.getStoreKey(index))
 
     return (synonyms != null)
       ? Array.from(synonyms)
@@ -34,33 +34,47 @@ export class SynonymRegistry {
   private insert (synonyms: string[]): void {
     const meanings = new Set<number>()
 
+    const dirty = new Set<string>()
+
     synonyms.forEach(synonym => {
       const existing = this.inverted.get(synonym)
-      typeof (existing) === 'undefined'
-        ? this.inverted.set(synonym, new Set<number>())
-        : existing.forEach(item => meanings.add(item))
+
+      if (typeof (existing) === 'undefined') {
+        this.inverted.set(synonym, new Set<number>())
+      } else {
+        const updates = this.store.get(this.getStoreKey(existing))
+        if (updates != null) {
+          updates.forEach(synonym => dirty.add(synonym))
+        }
+        existing.forEach(meaning => meanings.add(meaning))
+      }
     })
 
     if (meanings.size === 0) {
       meanings.add(++this.identifier)
     }
 
-    synonyms.forEach(synonym => {
+    ([...synonyms, ...Array.from(dirty)]).forEach(synonym => {
       this.inverted.set(synonym, meanings)
     })
   }
 
-  private generateStore (): void {
+  private generate (): void {
     const entries = Array.from(this.inverted.entries())
 
     this.store = entries.reduce((store, [synonym, meanings]) => {
-      const key = JSON.stringify(Array.from(meanings)) // TODO hash func
+      const key = this.getStoreKey(meanings)
       const list = store.get(key) ?? new Set<string>()
       list.add(synonym)
-
       store.set(key, list)
-
       return store
     }, new Map<string, Set<string>>())
+  }
+
+  private getStoreKey (meanings: Set<number>): string {
+    const sorted = Array.from(meanings)
+      .sort((a, b) => a - b)
+
+    return JSON.stringify(sorted)
   }
 }

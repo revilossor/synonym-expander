@@ -63,6 +63,47 @@ describe('Given a SynonymRegistry instance', () => {
           })
         })
       })
+
+      describe('And I then register a list of synonyms with a common item with both registered lists', () => {
+        const third = ['3', 'three', first[0], second[0]]
+
+        it('Then the registry includes the synonyms from each list', () => {
+          const registry = new SynonymRegistry()
+
+          registry.register(first, second)
+          expect(registry.keys).toEqual([...first, ...second])
+
+          const set = new Set([...first, ...second, ...third])
+          const expected = Array.from(set)
+
+          registry.register(third)
+
+          expect(registry.keys).toEqual(expect.arrayContaining(expected))
+          expect(registry.keys).toHaveLength(expected.length)
+        })
+
+        it('Then all items from all registered lists become synonymous', () => {
+          const registry = new SynonymRegistry()
+
+          registry.register(first, second)
+          expect(registry.keys).toEqual([...first, ...second])
+
+          const set = new Set([...first, ...second, ...third])
+          const all = Array.from(set)
+
+          expect(registry.getSynonymous(first[0])).not.toEqual(
+            registry.getSynonymous(second[0])
+          )
+
+          registry.register(third);
+
+          ([all]).forEach(list => {
+            list.forEach(synonym => {
+              expect(registry.getSynonymous(synonym)).toEqual(all)
+            })
+          })
+        })
+      })
     })
 
     describe('And there is an item that appears in both lists', () => {
@@ -89,14 +130,12 @@ describe('Given a SynonymRegistry instance', () => {
 
         const expected = [...first, common, ...second];
 
-        ([first]).forEach(list => {
+        ([first, second]).forEach(list => {
           list.forEach(synonym => {
             expect(registry.getSynonymous(synonym)).toEqual(expected)
           })
         })
       })
     })
-
-    // TODO two lists that arent jjoined, not syn - then reg one that joins them and are syn
   })
 })
