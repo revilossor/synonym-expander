@@ -15,8 +15,15 @@ export class SynonymRegistry {
     return this
   }
 
-  public get keys (): string[] {
-    return Array.from(this.inverted.keys())
+  public * keys (): IterableIterator<string> {
+    const keys = Array.from(this.inverted.keys())
+    while (keys.length > 0) {
+      const item = keys.pop()
+      if (typeof (item) === 'undefined') {
+        throw new Error('There was an error iterating over registry keys')
+      }
+      yield item
+    }
   }
 
   public getSynonymous (of: string): string[] {

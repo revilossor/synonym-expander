@@ -3,7 +3,7 @@ import { SynonymRegistry } from '../../src/SynonymRegistry'
 describe('Given a SynonymRegistry instance', () => {
   it('Then the registry is empty', () => {
     const registry = new SynonymRegistry()
-    expect(registry.keys).toEqual([])
+    expect(Array.from(registry.keys())).toEqual([])
   })
 
   describe('When I register a single list of synonyms', () => {
@@ -18,7 +18,10 @@ describe('Given a SynonymRegistry instance', () => {
       const registry = new SynonymRegistry()
       registry.register(synonyms)
 
-      expect(registry.keys).toEqual(synonyms)
+      const keys = Array.from(registry.keys())
+
+      expect(keys).toHaveLength(synonyms.length)
+      expect(keys).toEqual(expect.arrayContaining(synonyms))
     })
 
     it('Then each registered item is synonymous with each other registered item', () => {
@@ -48,7 +51,11 @@ describe('Given a SynonymRegistry instance', () => {
 
         registry.register(first, second)
 
-        expect(registry.keys).toEqual([...first, ...second])
+        const keys = Array.from(registry.keys())
+        const expected = [...first, ...second]
+
+        expect(keys).toHaveLength(expected.length)
+        expect(keys).toEqual(expect.arrayContaining(expected))
       })
 
       it('Then registered items are only synonymous with items from their own list', () => {
@@ -71,22 +78,33 @@ describe('Given a SynonymRegistry instance', () => {
           const registry = new SynonymRegistry()
 
           registry.register(first, second)
-          expect(registry.keys).toEqual([...first, ...second])
 
-          const set = new Set([...first, ...second, ...third])
-          const expected = Array.from(set)
+          let expected = [...first, ...second]
+          let keys = Array.from(registry.keys())
+
+          expect(keys).toHaveLength(expected.length)
+          expect(keys).toEqual(expect.arrayContaining(expected))
 
           registry.register(third)
 
-          expect(registry.keys).toEqual(expect.arrayContaining(expected))
-          expect(registry.keys).toHaveLength(expected.length)
+          const set = new Set([...first, ...second, ...third])
+          expected = Array.from(set)
+          keys = Array.from(registry.keys())
+
+          expect(keys).toHaveLength(expected.length)
+          expect(keys).toEqual(expect.arrayContaining(expected))
         })
 
         it('Then all items from all registered lists become synonymous', () => {
           const registry = new SynonymRegistry()
 
           registry.register(first, second)
-          expect(registry.keys).toEqual([...first, ...second])
+
+          const expected = [...first, ...second]
+          const keys = Array.from(registry.keys())
+
+          expect(keys).toHaveLength(expected.length)
+          expect(keys).toEqual(expect.arrayContaining(expected))
 
           const set = new Set([...first, ...second, ...third])
           const all = Array.from(set)
@@ -99,7 +117,9 @@ describe('Given a SynonymRegistry instance', () => {
 
           ([all]).forEach(list => {
             list.forEach(synonym => {
-              expect(registry.getSynonymous(synonym)).toEqual(all)
+              const synonyms = registry.getSynonymous(synonym)
+              expect(synonyms).toHaveLength(all.length)
+              expect(synonyms).toEqual(expect.arrayContaining(all))
             })
           })
         })
@@ -117,7 +137,10 @@ describe('Given a SynonymRegistry instance', () => {
           [...second, common]
         )
 
-        expect(registry.keys).toEqual([...first, common, ...second])
+        const expected = [...first, common, ...second]
+        const keys = Array.from(registry.keys())
+
+        expect(keys).toEqual(expect.arrayContaining(expected))
       })
 
       it('Then the items from both lists are all synonymous', () => {
@@ -132,7 +155,9 @@ describe('Given a SynonymRegistry instance', () => {
 
         ([first, second]).forEach(list => {
           list.forEach(synonym => {
-            expect(registry.getSynonymous(synonym)).toEqual(expected)
+            const synonyms = registry.getSynonymous(synonym)
+            expect(synonyms).toHaveLength(expected.length)
+            expect(synonyms).toEqual(expect.arrayContaining(expected))
           })
         })
       })
