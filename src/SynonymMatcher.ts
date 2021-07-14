@@ -1,6 +1,6 @@
 import { SynonymRegistry } from './SynonymRegistry'
 
-interface Match {
+export interface SynonymMatch {
   match: string
   location: number
   length: number
@@ -14,7 +14,7 @@ export class SynonymMatcher {
     this.registry = registry
   }
 
-  public match (string: string): Match[] {
+  public match (string: string): SynonymMatch[] {
     const output = []
     for (const matches of this.search(string)) {
       output.push(...matches)
@@ -22,7 +22,7 @@ export class SynonymMatcher {
     return output
   }
 
-  private * search (string: string): IterableIterator<Match[]> {
+  private * search (string: string): IterableIterator<SynonymMatch[]> {
     for (const key of this.registry.keys()) {
       const expression = this.getSearchExpression(key)
       const output = []
