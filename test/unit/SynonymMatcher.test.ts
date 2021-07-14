@@ -19,19 +19,19 @@ describe('Given a SynonymMatcher for a SynonymRegistry', () => {
     })
 
     describe('And there are some matches', () => {
-      it.skip('Then the expected match objects are returned', () => {
-        const string = "i am sure it's a good example"
+      it('Then the expected match objects are returned', () => {
+        const string = "i'm sure it's a good example"
         const matcher = new SynonymMatcher(registry)
         const expected = [
           {
-            match: ["i'm"],
+            match: "i'm",
             location: 0,
             length: 3,
             synonyms: ['i am', "i'm"]
           },
           {
-            match: ["it's"],
-            location: 10,
+            match: "it's",
+            location: 9,
             length: 4,
             synonyms: ['it is', "it's"]
           }

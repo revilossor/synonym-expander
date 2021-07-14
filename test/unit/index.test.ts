@@ -5,14 +5,13 @@ import { SynonymRegistry } from '../../src/SynonymRegistry'
 
 jest.mock('../../src/SynonymRegistry')
 
-console.log = jest.fn()
-
 describe('When I construct a SynonymExpander with some synonym lists', () => {
   const synonyms = [
     ['nice', 'okay', 'fine'],
     ["it's", 'it is']
   ]
 
+  // TODO dont mock... do this more integrationy
   it('Then a synonym registry is initialised and the lists registered', () => {
     new SynonymExpander(...synonyms)
 

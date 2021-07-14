@@ -1,10 +1,10 @@
 import { SynonymRegistry } from './SynonymRegistry'
 
 interface Match {
-  source: string
+  match: string
   location: number
   length: number
-  alternatives: string[]
+  synonyms: string[]
 }
 
 export class SynonymMatcher {
@@ -14,53 +14,44 @@ export class SynonymMatcher {
     this.registry = registry
   }
 
-  // private * search(string: string): IterableIterator<Match | undefined> {
-  //   let index = 0
-  //   const keys =
-  //
-  //
-  //
-  //   yield {
-  //     source: 'string',
-  //     location: 0,
-  //     length: 0,
-  //     alternatives: []
-  //   }
-  // }
-
   public match (string: string): Match[] {
-    // for each key in registry
-    // create expression
-    // get all matches in string
-    // build output
-    return []
+    const output = []
+    for (const matches of this.search(string)) {
+      output.push(...matches)
+    }
+    return output
+  }
+
+  private * search (string: string): IterableIterator<Match[]> {
+    for (const key of this.registry.keys()) {
+      const matches = Array.from(
+        string.matchAll(this.getSearchExpression(key))
+      )
+      yield matches.reduce(
+        this.getMatchReducer(key),
+        []
+      )
+    }
+  }
+
+  private getSearchExpression (string: string): RegExp {
+    return new RegExp(`\\b(${string})\\b`, 'gm')
+  }
+
+  private getMatchReducer (key: string): (
+    output: Match[],
+    match: RegExpMatchArray
+  ) => Match[] {
+    return (output, match) => {
+      if (typeof (match.index) !== 'undefined') {
+        output.push({
+          match: key,
+          location: match.index,
+          length: key.length,
+          synonyms: this.registry.getSynonymous(key)
+        })
+      }
+      return output
+    }
   }
 }
-
-/*
-private getMatches(target: string, type: Type, model: Model): Array<Match> {
-   const length = model[type].length
-   const results = Array.from(
-     target.matchAll(new RegExp(model[type], 'gi'))
-   )
-   return results.reduce((
-     matches: Array<Match>,
-     { index }: RegExpMatchArray
-   ) => {
-     if(index !== undefined) {
-       matches.push({
-         type,
-         model,
-         target,
-         location: {
-           start: index,
-           length,
-           end: index + length
-         }
-       })
-     }
-     return matches
-   }, [])
- }
-
-*/
