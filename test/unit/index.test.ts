@@ -21,4 +21,8 @@ describe('When I construct a SynonymExpander with some synonym lists', () => {
       ...synonyms
     )
   })
+
+  // describe('When I expand a string', () => {
+  //   it('Then ')
+  // })
 })

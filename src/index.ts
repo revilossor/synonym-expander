@@ -7,4 +7,10 @@ export default class SynonymExpander {
     this.registry = new SynonymRegistry()
     this.registry.register(...synonyms)
   }
+
+  public expand (item: string): string[] {
+    return [
+      item
+    ]
+  }
 }

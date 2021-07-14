@@ -66,7 +66,12 @@ export class SynonymRegistry {
 
     this.store = entries.reduce((store, [synonym, meanings]) => {
       const key = this.getStoreKey(meanings)
-      const list = store.get(key) ?? new Set<string>()
+      let list = store.get(key)
+
+      if (typeof (list) === 'undefined') {
+        list = new Set<string>()
+      }
+
       list.add(synonym)
       store.set(key, list)
       return store
