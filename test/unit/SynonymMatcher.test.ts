@@ -13,8 +13,8 @@ describe('Given a SynonymMatcher for a SynonymRegistry', () => {
       it('Then an empty array is returned', () => {
         const matcher = new SynonymMatcher(registry)
         expect(matcher.match('the moon')).toEqual([])
-        expect(matcher.match("is notisn'tiami'm")).toEqual([]) // NOTE need word boundaries to match
-        expect(matcher.match('this IS NOT a match')).toEqual([]) // NOTE case insensitive
+        expect(matcher.match("is notisn'tiami'm")).toEqual([])
+        expect(matcher.match('this IS NOT a match')).toEqual([])
       })
     })
 
@@ -41,4 +41,7 @@ describe('Given a SynonymMatcher for a SynonymRegistry', () => {
       })
     })
   })
+
+  // TODO when there is a match overlap - "i am not" with [ "i'm", "amn't" ]
+  // TODO ultimately need to output both - but handle in processor....
 })
