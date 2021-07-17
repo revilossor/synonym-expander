@@ -90,7 +90,7 @@ describe('When I get a synonym match tree for a list of matches', () => {
         {
           match: 'go',
           location: 0,
-          length: 13,
+          length: 2,
           synonyms: ['5', '6']
         }
       ]
@@ -99,21 +99,99 @@ describe('When I get a synonym match tree for a list of matches', () => {
 
       expect(tree.children).toHaveLength(3)
 
-      expect(tree.children[0].data.match).toBe('start')
-      expect(tree.children[1].data.match).toBe('beginning')
-      expect(tree.children[2].data.match).toBe('go')
+      const neighbours = tree.children.map(({ data }) => data)
+      expect(neighbours).toEqual(expect.arrayContaining(matches))
+
+      tree.children.forEach(child => {
+        expect(child.children).toHaveLength(0)
+      })
     })
   })
 
-  // overlaps with children
+  describe('And the list contains an overlapping match followed a non overlapping match', () => {
+    it('Then the expected tree is returned', () => {
+      const matches = [
+        {
+          match: 'left',
+          location: 0,
+          length: 5,
+          synonyms: ['1', '2']
+        },
+        {
+          match: 'right',
+          location: 0,
+          length: 9,
+          synonyms: ['3', '4']
+        },
+        {
+          match: 'both',
+          location: 10,
+          length: 13,
+          synonyms: ['5', '6']
+        }
+      ]
 
-  // overlaps
-  // i am / not have / am not
-  // i'm / not've / amn't
-  // "i am not have"
+      const tree = getSynonymMatchTree(matches)
 
-  // i'm not have
-  // i am not've
-  // i am'nt have
-  // i'm not've    <--- dont think this will work ATM
+      expect(tree.children).toHaveLength(2)
+      expect(tree.children[0].data.match).toBe('left')
+      expect(tree.children[1].data.match).toBe('right')
+
+      expect(tree.children[0].children).toHaveLength(1)
+      expect(tree.children[0].children[0].data.match).toBe('both')
+
+      expect(tree.children[1].children).toHaveLength(1)
+      expect(tree.children[1].children[0].data.match).toBe('both')
+    })
+  })
+
+  describe('And the list contains matches that join non overlapping matches', () => {
+    it('Then the expected tree is returned', () => {
+      // eg [ [ i am, 'i'm ], [ not have, not've ], [ am not, amn't ] ]
+      // with the string "i am not have blah blah blah leaf"
+
+      const matches = [
+        {
+          match: 'i am',
+          location: 0,
+          length: 4,
+          synonyms: ['1', '2']
+        },
+        {
+          match: 'am not',
+          location: 2,
+          length: 6,
+          synonyms: ['3', '4']
+        },
+        {
+          match: 'not have',
+          location: 5,
+          length: 8,
+          synonyms: ['5', '6']
+        },
+        {
+          match: 'leaf',
+          location: 20,
+          length: 4,
+          synonyms: ['7', '8']
+        }
+      ]
+
+      const tree = getSynonymMatchTree(matches)
+
+      expect(tree.children).toHaveLength(2)
+      expect(tree.children[0].data.match).toBe('i am')
+      expect(tree.children[1].data.match).toBe('am not')
+
+      expect(tree.children[0].children).toHaveLength(1)
+      expect(tree.children[0].children[0].data.match).toBe('not have')
+      expect(tree.children[0].children[0].children).toHaveLength(1)
+      expect(tree.children[0].children[0].children[0].data.match).toBe('leaf')
+      expect(tree.children[0].children[0].children[0].children).toHaveLength(0)
+
+      expect(tree.children[1].children).toHaveLength(1)
+      expect(tree.children[1].children[0].data.match).toBe('leaf')
+      expect(tree.children[1].children[0].children).toHaveLength(0)
+    })
+  })
 })

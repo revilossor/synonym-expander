@@ -3,63 +3,57 @@ import { SynonymMatch } from './SynonymMatcher'
 
 export type SynonymMatchTree = Tree<SynonymMatch>
 
+function notTheSameAs (...source: SynonymMatch[]): (match: SynonymMatch) => boolean {
+  const list = source.map(item => JSON.stringify(item))
+  return (item) => !list.includes(JSON.stringify(item))
+}
+
 function byLocationAndLength (left: SynonymMatch, right: SynonymMatch): number {
   const hash = (match: SynonymMatch): number => (match.location * 1000000) + match.length
   return hash(left) - hash(right)
 }
 
-function isOverlapping (left: SynonymMatch, right?: SynonymMatch): boolean {
-  if (right == null) { return false }
-  return right.location >= left.location &&
-    right.location <= left.location + left.length
+function isOverlapping (left: SynonymMatch, right: SynonymMatch): boolean {
+  const leftEnd = left.location + left.length
+  const rightEnd = right.location + right.length
+
+  const onLeft = right.location >= left.location &&
+    right.location <= leftEnd
+  const onRight = rightEnd >= left.location &&
+    rightEnd <= leftEnd
+  return onLeft || onRight
 }
 
 function populateTree (
   tree: SynonymMatchTree,
-  matches: SynonymMatch[],
-  index = 0
+  matches: SynonymMatch[]
 ): SynonymMatchTree {
-  if (index >= matches.length) {
+  if (matches.length === 0) {
     return tree
   }
 
-  const thisMatch = matches[index]
-  const thisChild = tree.addChild(thisMatch)
-
-  // console.dir({
-  //   index,
-  //   match: thisMatch.match
-  // })
-
-  let neighbours = 0
-  let nextMatch = matches[index + 1]
-
-  while (isOverlapping(thisMatch, nextMatch)) {
-    // console.log('['+index+'] overlap with ' + nextMatch.match)
-    neighbours++
-    populateTree(
-      tree.addChild(nextMatch),
-      matches,
-      index + neighbours + 1
-    )
-    nextMatch = matches[index + neighbours + 1]
-    // if(nextMatch) {
-    //   console.log('checking [' + (index + neighbours + 1) + '] ' + nextMatch.match)
-    // }
-  }
-
-  populateTree(
-    thisChild,
-    matches,
-    index + neighbours + 1
+  const children = matches.filter(
+    item => isOverlapping(item, matches[0])
   )
+
+  const remaining = matches.filter(
+    notTheSameAs(...children)
+  )
+
+  children.forEach(match => {
+    populateTree(
+      tree.addChild(match),
+      remaining.filter(
+        item => !isOverlapping(match, item)
+      )
+    )
+  })
 
   return tree
 }
 
 export function getSynonymMatchTree (matches: SynonymMatch[]): SynonymMatchTree {
   const sorted = [...matches].sort(byLocationAndLength)
-  // console.dir({ sorted })
   const root = new Tree({
     match: 'root',
     location: -1,
