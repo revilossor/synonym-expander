@@ -17,33 +17,41 @@ function isOverlapping (left: SynonymMatch, right?: SynonymMatch): boolean {
 function populateTree (
   tree: SynonymMatchTree,
   matches: SynonymMatch[],
-  index = 0,
-  addSiblings = true
+  index = 0
 ): SynonymMatchTree {
   if (index >= matches.length) {
     return tree
   }
+
   const thisMatch = matches[index]
+  const thisChild = tree.addChild(thisMatch)
 
-  const siblings: SynonymMatchTree[] = []
+  // console.dir({
+  //   index,
+  //   match: thisMatch.match
+  // })
 
-  if (addSiblings) {
-    let nextMatch = matches[index + 1]
-    while (isOverlapping(thisMatch, nextMatch)) {
-      siblings.push(tree.addSibling(nextMatch))
-      nextMatch = matches[index + siblings.length + 1]
-    }
-    siblings.forEach(sibling => {
-      populateTree(sibling, matches, index + siblings.length + 1, false)
-    })
+  let neighbours = 0
+  let nextMatch = matches[index + 1]
+
+  while (isOverlapping(thisMatch, nextMatch)) {
+    // console.log('['+index+'] overlap with ' + nextMatch.match)
+    neighbours++
+    populateTree(
+      tree.addChild(nextMatch),
+      matches,
+      index + neighbours + 1
+    )
+    nextMatch = matches[index + neighbours + 1]
+    // if(nextMatch) {
+    //   console.log('checking [' + (index + neighbours + 1) + '] ' + nextMatch.match)
+    // }
   }
 
-  const next = siblings.length > 0
-    ? tree.addSibling(thisMatch)
-    : tree.addChild(thisMatch)
-
   populateTree(
-    next, matches, index + siblings.length + 1
+    thisChild,
+    matches,
+    index + neighbours + 1
   )
 
   return tree
@@ -51,6 +59,7 @@ function populateTree (
 
 export function getSynonymMatchTree (matches: SynonymMatch[]): SynonymMatchTree {
   const sorted = [...matches].sort(byLocationAndLength)
+  // console.dir({ sorted })
   const root = new Tree({
     match: 'root',
     location: -1,
