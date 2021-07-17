@@ -2,11 +2,7 @@ import { Tree } from './lib/Tree'
 import { SynonymMatch } from './SynonymMatcher'
 
 export type SynonymMatchTree = Tree<SynonymMatch>
-
-function notTheSameAs (...source: SynonymMatch[]): (match: SynonymMatch) => boolean {
-  const list = source.map(item => JSON.stringify(item))
-  return (item) => !list.includes(JSON.stringify(item))
-}
+type SynonymMatchList = SynonymMatch[]
 
 function byLocationAndLength (left: SynonymMatch, right: SynonymMatch): number {
   const hash = (match: SynonymMatch): number => (match.location * 1000000) + match.length
@@ -24,6 +20,19 @@ function isOverlapping (left: SynonymMatch, right: SynonymMatch): boolean {
   return onLeft || onRight
 }
 
+function determineChildren (matches: SynonymMatchList): [ SynonymMatchList, SynonymMatchList ] {
+  const tuple: [SynonymMatchList, SynonymMatchList] = [[], []]
+  return matches.reduce(
+    ([children, remaining], match) => {
+      isOverlapping(match, matches[0])
+        ? children.push(match)
+        : remaining.push(match)
+      return [children, remaining]
+    },
+    tuple
+  )
+}
+
 function populateTree (
   tree: SynonymMatchTree,
   matches: SynonymMatch[]
@@ -32,13 +41,7 @@ function populateTree (
     return tree
   }
 
-  const children = matches.filter(
-    item => isOverlapping(item, matches[0])
-  )
-
-  const remaining = matches.filter(
-    notTheSameAs(...children)
-  )
+  const [children, remaining] = determineChildren(matches)
 
   children.forEach(match => {
     populateTree(
