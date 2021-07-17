@@ -33,16 +33,7 @@ function determineChildren (matches: SynonymMatchList): [ SynonymMatchList, Syno
   )
 }
 
-function populateTree (
-  tree: SynonymMatchTree,
-  matches: SynonymMatch[]
-): SynonymMatchTree {
-  if (matches.length === 0) {
-    return tree
-  }
-
-  const [children, remaining] = determineChildren(matches)
-
+function addChildren (tree: SynonymMatchTree, [children, remaining]: [ SynonymMatchList, SynonymMatchList ]): void {
   children.forEach(match => {
     populateTree(
       tree.addChild(match),
@@ -51,6 +42,20 @@ function populateTree (
       )
     )
   })
+}
+
+function populateTree (
+  tree: SynonymMatchTree,
+  matches: SynonymMatch[]
+): SynonymMatchTree {
+  if (matches.length === 0) {
+    return tree
+  }
+
+  addChildren(
+    tree,
+    determineChildren(matches)
+  )
 
   return tree
 }
