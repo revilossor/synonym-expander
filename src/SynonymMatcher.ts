@@ -10,7 +10,7 @@ export interface SynonymMatch {
 export class SynonymMatcher {
   private readonly registry: SynonymRegistry
 
-  constructor (registry: SynonymRegistry) {
+  public constructor (registry: SynonymRegistry) {
     this.registry = registry
   }
 
