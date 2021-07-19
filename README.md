@@ -6,7 +6,7 @@ Synonym sets are expressed as a list of lists.
 You initialise the expander with synonyms, like this:
 
 ```typescript
-import { SynonymExpander } from 'synonym-expander'
+import SynonymExpander from 'synonym-expander'
 
 const synonyms = [
   ["nice", "okay", "fine"],
