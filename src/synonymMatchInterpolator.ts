@@ -31,6 +31,6 @@ export function synonymMatchInterpolator (
   matches: SynonymMatch[]
 ): string[] {
   const tree = getSynonymMatchTree(matches)
-
-  return augment([input], tree)
+  const results = augment([input], tree)
+  return Array.from(new Set(results))
 }

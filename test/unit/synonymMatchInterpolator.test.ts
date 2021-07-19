@@ -58,3 +58,40 @@ describe('When I interpolate a list of matches with no overlaps', () => {
     expect(actual).toEqual(expect.arrayContaining(expected))
   })
 })
+
+describe('When I interpolate matches that would produce dupilicte augmentations', () => {
+  it('Then the duplicates are removed', () => {
+    const input = 'I might not have not'
+    const matches = [
+      {
+        match: 'might not have',
+        length: 14,
+        location: 2,
+        synonym: 'might not have'
+      },
+      {
+        match: 'might not have',
+        length: 14,
+        location: 2,
+        synonym: "mightn't've"
+      },
+      { match: 'have not', length: 8, location: 12, synonym: 'have not' },
+      { match: 'have not', length: 8, location: 12, synonym: "haven't" },
+      { match: 'might not', length: 9, location: 2, synonym: 'might not' },
+      { match: 'might not', length: 9, location: 2, synonym: "mightn't" }
+    ]
+
+    const expected = [
+      'I might not have not',
+      "I might not haven't",
+      "I mightn't have not",
+      "I mightn't haven't",
+      "I mightn't've not"
+    ]
+
+    const actual = synonymMatchInterpolator(input, matches)
+
+    expect(actual).toHaveLength(expected.length)
+    expect(actual).toEqual(expect.arrayContaining(expected))
+  })
+})
