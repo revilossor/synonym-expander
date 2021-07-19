@@ -4,7 +4,7 @@ export interface SynonymMatch {
   match: string
   location: number
   length: number
-  synonyms: string[]
+  synonym: string
 }
 
 export class SynonymMatcher {
@@ -22,19 +22,26 @@ export class SynonymMatcher {
     return output
   }
 
+  private toSynonymMatches (match: RegExpMatchArray, key: string): SynonymMatch[] {
+    if (typeof (match.index) === 'undefined') {
+      return []
+    }
+    const location = match.index
+    const synonyms = this.registry.getSynonymous(key)
+    return synonyms.map(synonym => ({
+      match: key,
+      length: key.length,
+      location,
+      synonym
+    }))
+  }
+
   private * search (string: string): IterableIterator<SynonymMatch[]> {
     for (const key of this.registry.keys()) {
       const expression = this.getSearchExpression(key)
       const output = []
       for (const match of string.matchAll(expression)) {
-        if (typeof (match.index) !== 'undefined') {
-          output.push({
-            match: key,
-            location: match.index,
-            length: key.length,
-            synonyms: this.registry.getSynonymous(key)
-          })
-        }
+        output.push(...this.toSynonymMatches(match, key))
       }
       yield output
     }

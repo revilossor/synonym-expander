@@ -27,8 +27,7 @@ describe('Given a SynonymExpander', () => {
       })
     })
 
-    // TODO
-    describe.skip('When I expand a string that contains a single synonym', () => {
+    describe('When I expand a string that contains a single synonym', () => {
       it('Then I get the expected results', () => {
         const expander = new SynonymExpander(...synonyms)
         const input = 'some random input string'

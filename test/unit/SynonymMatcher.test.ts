@@ -27,13 +27,25 @@ describe('Given a SynonymMatcher for a SynonymRegistry', () => {
             match: "i'm",
             location: 0,
             length: 3,
-            synonyms: ['i am', "i'm"]
+            synonym: 'i am'
+          },
+          {
+            match: "i'm",
+            location: 0,
+            length: 3,
+            synonym: "i'm"
           },
           {
             match: "it's",
             location: 9,
             length: 4,
-            synonyms: ['it is', "it's"]
+            synonym: 'it is'
+          },
+          {
+            match: "it's",
+            location: 9,
+            length: 4,
+            synonym: "it's"
           }
         ]
 
@@ -41,7 +53,4 @@ describe('Given a SynonymMatcher for a SynonymRegistry', () => {
       })
     })
   })
-
-  // TODO when there is a match overlap - "i am not" with [ "i'm", "amn't" ]
-  // TODO ultimately need to output both - but handle in processor....
 })

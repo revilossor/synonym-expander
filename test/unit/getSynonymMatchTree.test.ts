@@ -15,13 +15,13 @@ describe('When I get a synonym match tree for a list of matches', () => {
           match: "it's",
           location: 9,
           length: 4,
-          synonyms: ['it is', "it's"]
+          synonym: 'it is'
         },
         {
           match: "i'm",
           location: 0,
           length: 3,
-          synonyms: ['i am', "i'm"]
+          synonym: 'i am'
         }
       ]
 
@@ -43,19 +43,19 @@ describe('When I get a synonym match tree for a list of matches', () => {
           match: "it's",
           location: 9,
           length: 4,
-          synonyms: ['it is', "it's"]
+          synonym: 'it is'
         },
         {
           match: "it's an overlap that starts before",
           location: 8,
           length: 2,
-          synonyms: ['it is', "it's"]
+          synonym: 'before'
         },
         {
           match: "i'm",
           location: 0,
           length: 3,
-          synonyms: ['i am', "i'm"]
+          synonym: 'i am'
         }
       ]
 
@@ -79,19 +79,19 @@ describe('When I get a synonym match tree for a list of matches', () => {
           match: 'start',
           location: 0,
           length: 5,
-          synonyms: ['1', '2']
+          synonym: '1'
         },
         {
           match: 'beginning',
           location: 0,
           length: 9,
-          synonyms: ['3', '4']
+          synonym: '2'
         },
         {
           match: 'go',
           location: 0,
           length: 2,
-          synonyms: ['5', '6']
+          synonym: '3'
         }
       ]
 
@@ -115,19 +115,19 @@ describe('When I get a synonym match tree for a list of matches', () => {
           match: 'left',
           location: 0,
           length: 5,
-          synonyms: ['1', '2']
+          synonym: '1'
         },
         {
           match: 'right',
           location: 0,
           length: 9,
-          synonyms: ['3', '4']
+          synonym: '2'
         },
         {
           match: 'both',
           location: 10,
           length: 13,
-          synonyms: ['5', '6']
+          synonym: '1 and 2'
         }
       ]
 
@@ -155,25 +155,25 @@ describe('When I get a synonym match tree for a list of matches', () => {
           match: 'i am',
           location: 0,
           length: 4,
-          synonyms: ['1', '2']
+          synonym: '1'
         },
         {
           match: 'am not',
           location: 2,
           length: 6,
-          synonyms: ['3', '4']
+          synonym: '2'
         },
         {
           match: 'not have',
           location: 5,
           length: 8,
-          synonyms: ['5', '6']
+          synonym: '3'
         },
         {
           match: 'leaf',
           location: 20,
           length: 4,
-          synonyms: ['7', '8']
+          synonym: '4'
         }
       ]
 

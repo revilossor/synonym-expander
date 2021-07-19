@@ -66,7 +66,7 @@ export function getSynonymMatchTree (matches: SynonymMatch[]): SynonymMatchTree 
     match: 'root',
     location: -1,
     length: -1,
-    synonyms: []
+    synonym: 'root'
   })
   return populateTree(root, sorted)
 }
