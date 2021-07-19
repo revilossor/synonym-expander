@@ -25,6 +25,13 @@ describe('Given a SynonymExpander', () => {
           input
         ])
       })
+      it('And synonyms must be delimited by word boundaries', () => {
+        const expander = new SynonymExpander(...synonyms)
+        const input = 'inputtestexample'
+        expect(expander.expand(input)).toEqual([
+          input
+        ])
+      })
     })
 
     describe('When I expand a string that contains a single synonym', () => {
@@ -105,6 +112,21 @@ describe('Given a SynonymExpander', () => {
       })
     })
   })
-
-  // TODO merging synonyn sets
+  describe('When multiple synonym sets reference the same synonym', () => {
+    it('Then they are merged together', () => {
+      const expander = new SynonymExpander(
+        ["it's", 'it is'],
+        ['it is', "'tis"]
+      )
+      const input = "it's not that"
+      const expected = [
+        "it's not that",
+        "'tis not that",
+        'it is not that'
+      ]
+      const actual = expander.expand(input)
+      expect(actual).toEqual(expect.arrayContaining(expected))
+      expect(actual).toHaveLength(expected.length)
+    })
+  })
 })
