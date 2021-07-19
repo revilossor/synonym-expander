@@ -1,6 +1,6 @@
 {
   "name": "synonym-expander",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Tool for expanding strings into every possible state given a set of word / phrase synonyms",
   "keywords": [],
   "homepage": "https://github.com/revilossor/synonym-expander#readme",
