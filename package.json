@@ -15,12 +15,14 @@
   "author": "oliver.ross@hotmail.com",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "prebuild": "npm run clean",
     "build": "ncc build src/index.ts -m -o dist",
     "clean": "rm -rf dist",
     "lint": "ts-standard .",
-    "prepare": "npm run build",
     "test": "jest"
   },
   "lint-staged": {
