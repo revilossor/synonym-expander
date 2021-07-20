@@ -1,6 +1,6 @@
 {
   "name": "synonym-expander",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Tool for expanding strings into every possible state given a set of word / phrase synonyms",
   "keywords": [
     "synonym",
